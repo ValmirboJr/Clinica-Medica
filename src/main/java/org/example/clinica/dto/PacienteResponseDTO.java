@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class PacienteResponseDTO {
 
-    private UUID id;
+    private UUID idpaciente;
     private String nome;
     private String cpf;
     private String endereco;

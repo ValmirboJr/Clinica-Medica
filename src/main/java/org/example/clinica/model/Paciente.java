@@ -17,7 +17,7 @@ public class Paciente {
     @Id
     @GeneratedValue
     @Column(name = "ID_PACIENTE")
-    private UUID id;
+    private UUID idpaciente;
 
     @Column(name = "NOME_PACIENTE")
     private String nome;

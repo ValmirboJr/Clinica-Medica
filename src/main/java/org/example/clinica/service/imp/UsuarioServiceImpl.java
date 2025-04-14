@@ -50,7 +50,7 @@ public class UsuarioServiceImpl implements UsuarioService{
         Usuario usuario = new Usuario();
         usuario.setNome(usuarioRequestDTO.getNome());
         usuario.setSenha(usuarioRequestDTO.getSenha());
-        return usuarioRepository.save(usuario);
+        return usuarioRepository.save(mapper.dtoParaEntidade(usuarioRequestDTO,Usuario.class));
     }
 
     @Override
