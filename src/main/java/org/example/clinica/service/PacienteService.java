@@ -9,9 +9,8 @@ import java.util.UUID;
 
 public interface PacienteService {
     List<Paciente> findAll();
-    Paciente findById(UUID id) throws NotFoundException;
-    Paciente findByNome(String nome) throws NotFoundException;
+    Paciente getById(UUID id) throws NotFoundException;
     Paciente Create(PacienteRequestDTO pacienteRequestDTO) throws NotFoundException;
-    Paciente Update(PacienteRequestDTO pacienteRequestDTO) throws NotFoundException;
+    Paciente Update(PacienteRequestDTO pacienteRequestDTO, UUID idpaciente) throws NotFoundException;
     void delete(UUID id) throws NotFoundException;
 }
