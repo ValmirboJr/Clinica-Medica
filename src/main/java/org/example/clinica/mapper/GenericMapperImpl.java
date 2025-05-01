@@ -1,7 +1,10 @@
 package org.example.clinica.mapper;
 
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.example.clinica.dto.AtendimentoResponseDTO;
+import org.example.clinica.model.Atendimento;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,17 @@ import java.util.stream.Collectors;
 public class GenericMapperImpl implements GenericMapper {
 
     private final ModelMapper mapper;
+
+    @PostConstruct
+    public void setupMappings() {
+        mapper.typeMap(Atendimento.class, AtendimentoResponseDTO.class)
+                .addMappings(m -> {
+                    m.map(src -> src.getMedico().getIdmedico(),     AtendimentoResponseDTO::setIdMedico);
+                    m.map(src -> src.getMedico().getNome(),   AtendimentoResponseDTO::setNomeMedico);
+                    m.map(src -> src.getPaciente().getIdpaciente(),   AtendimentoResponseDTO::setIdPaciente);
+                    m.map(src -> src.getPaciente().getNome(), AtendimentoResponseDTO::setNomePaciente);
+                });
+    }
 
     public <T> T entidadeParaDTO(Object entidade, Class<T> dto){
         return mapper.map(entidade, dto);
