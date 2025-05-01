@@ -7,11 +7,9 @@ import org.example.clinica.mapper.GenericMapper;
 import org.example.clinica.model.Atendimento;
 import org.example.clinica.model.Medico;
 import org.example.clinica.model.Paciente;
-import org.example.clinica.model.Usuario;
 import org.example.clinica.repository.AtendimentoRepository;
 import org.example.clinica.repository.MedicoRepository;
 import org.example.clinica.repository.PacienteRepository;
-import org.example.clinica.repository.UsuarioRepository;
 import org.example.clinica.service.AtendimentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +29,7 @@ public class AtendimentoServiceImpl implements AtendimentoService {
     private PacienteRepository pacienteRepository;
 
     private final GenericMapper mapper;
+
     @Autowired
     private MedicoRepository medicoRepository;
 
@@ -45,42 +44,47 @@ public class AtendimentoServiceImpl implements AtendimentoService {
         return atendimentoRepository.findAll();
     }
 
-
     @Override
-    public List<Atendimento> CriarAtendimento(List<AtendimentoRequestDTO> atendimentoRequestDTOList, UUID idPaciente, UUID idmedico, LocalTime hora, LocalDate data, String sala) throws NotFoundException {
-        List<Atendimento> atendimentosCriados = new ArrayList<>();
-
+    public List<Atendimento> CriarAtendimento(List<AtendimentoRequestDTO> dtoList, UUID idPaciente) throws NotFoundException {
+        List<Atendimento> criados = new ArrayList<>();
         Paciente paciente = pacienteRepository.findById(idPaciente)
-                .orElseThrow(() -> new NotFoundException("Usuário não encontrado com o ID: " + idPaciente));
+                .orElseThrow(() -> new NotFoundException("Paciente não encontrado: " + idPaciente));
 
-        Medico medico = medicoRepository.findById(idmedico)
-                .orElseThrow(() -> new NotFoundException("Médico não encontrado com o ID: " + idmedico));
+        for (AtendimentoRequestDTO dto : dtoList) {
+            UUID idMedico = dto.getIdMedico();
+            LocalTime hora = dto.getHora();
+            LocalDate data = dto.getData();
+            String sala = dto.getSala();
 
-        List<Atendimento> atendimentosExistentes = atendimentoRepository.findByMedicoAndHoraAndData(medico, hora, data);
-        if (!atendimentosExistentes.isEmpty()) {
-            throw new NotFoundException("Médico já possui atendimento agendado para este horário e data");
+            Medico medico = medicoRepository.findById(idMedico)
+                    .orElseThrow(() -> new NotFoundException("Médico não encontrado: " + idMedico));
+
+            if (!atendimentoRepository
+                    .findByMedicoAndHoraAndData(medico, data)
+                    .isEmpty()) {
+                throw new NotFoundException(
+                        "Médico já agendado em " + data + " " + hora);
+            }
+
+            Atendimento at = new Atendimento();
+            at.setPaciente(paciente);
+            at.setMedico(medico);
+            at.setHora(hora);
+            at.setData(data);
+            at.setSala(sala);
+            criados.add(atendimentoRepository.save(at));
         }
 
-        for (AtendimentoRequestDTO atendimentoDTO : atendimentoRequestDTOList) {
-            Atendimento atendimento = new Atendimento();
-            atendimento.setPaciente(paciente);
-            atendimento.setMedico(medico);
-            atendimento.setHora(hora);
-            atendimento.setData(data);
-            atendimento.setSala(sala);
-            atendimento = atendimentoRepository.save(atendimento);
-            atendimentosCriados.add(atendimento);
-        }
-
-        return atendimentosCriados;
+        return criados;
     }
 
+
     @Override
-    public List<Atendimento> listarAtendimentos(String crm, LocalTime hora,LocalDate data) {
-        Optional<Medico> medico = medicoRepository.findByCrm(crm);
-        if (medico.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return atendimentoRepository.findByMedicoAndHoraAndData(medico.get(), hora, data);
+    public List<Atendimento> listarAtendimentos(String crm, LocalDate data) {
+        Medico medico = medicoRepository.findByCrm(crm)
+                .orElseThrow(() ->
+                        new NotFoundException("Médico não encontrado com o CRM: " + crm)
+                );
+        return atendimentoRepository.findByMedicoAndHoraAndData(medico, data);
     }
 }

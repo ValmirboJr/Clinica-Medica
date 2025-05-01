@@ -13,6 +13,6 @@ public interface AtendimentoService {
 
     Atendimento findById(UUID id) throws NotFoundException;
     List<Atendimento> findAll();
-    List<Atendimento> CriarAtendimento(List<AtendimentoRequestDTO> atendimentoRequestDTOList, UUID idUsuario, UUID idmedico, LocalTime hora,LocalDate data, String sala) throws NotFoundException;
-    List<Atendimento> listarAtendimentos(String crm, LocalTime hora,LocalDate data) throws NotFoundException;
+    List<Atendimento> CriarAtendimento(List<AtendimentoRequestDTO> dtoList, UUID idPaciente) throws NotFoundException;
+    List<Atendimento> listarAtendimentos(String crm, LocalDate data) throws NotFoundException;
 }

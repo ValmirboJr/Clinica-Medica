@@ -15,14 +15,14 @@ import java.util.UUID;
 public class Medico {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID_MEDICO")
-    private UUID id;
+    private UUID idmedico;
 
     @Column(name = "NOME_MEDICO")
     private String nome;
 
-    @Column(name = "CRM_MEDICO")
+    @Column(name = "CRM_MEDICO", length = 11)
     private String crm;
 
     @Column(name = "ESPECIALIDADE_MEDICO")

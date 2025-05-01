@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -17,8 +18,8 @@ import java.util.UUID;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class AtendimentoRequestDTO {
 
+    private List<AtendimentoRequestDTO> atendimentoRequestDTOList;
     private UUID idMedico;
-    private Long idPaciente;
     private LocalDate data;
     private LocalTime hora;
     private String sala;
