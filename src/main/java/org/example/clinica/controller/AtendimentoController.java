@@ -21,6 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 @RequestMapping("/Atendimento")
 public class AtendimentoController {
 
@@ -58,15 +59,33 @@ public class AtendimentoController {
     }
 
 
+    @GetMapping("/paciente/{idPaciente}")
+    public ResponseEntity<List<AtendimentoResponseDTO>> listarPorPaciente(
+            @PathVariable UUID idPaciente) throws NotFoundException {
+
+        List<Atendimento> lista = atendimentoService.findByPaciente(idPaciente);
+        List<AtendimentoResponseDTO> dtos =
+                mapper.entidadeParaDTO(lista, AtendimentoResponseDTO.class);
+
+        return ResponseEntity.ok(dtos);
+    }
+
     @PostMapping("/listar")
     public ResponseEntity<List<AtendimentoResponseDTO>> listarAtendimentos(
             @RequestBody Map<String,String> filtro
     ) throws NotFoundException {
         String crm = filtro.get("crm");
         LocalDate data = LocalDate.parse(filtro.get("data"));
-        List<Atendimento> atends = atendimentoService.listarAtendimentos(crm, data);
+        LocalTime hora = LocalTime.parse(filtro.get("hora"));
+        List<Atendimento> atends = atendimentoService.listarAtendimentos(crm, data,hora);
         List<AtendimentoResponseDTO> dtos =
                 mapper.entidadeParaDTO(atends, AtendimentoResponseDTO.class);
         return ResponseEntity.ok(dtos);
+    }
+    @GetMapping("/atendimentos/especialidade")
+    public ResponseEntity<List<Atendimento>> listarAtendimentosPorEspecialidade(
+            @RequestParam String especialidade) {
+        List<Atendimento> atendimentos = atendimentoService.listarAtendimentosPorEspecialidade(especialidade);
+        return ResponseEntity.ok(atendimentos);
     }
 }

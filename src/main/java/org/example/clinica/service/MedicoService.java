@@ -14,4 +14,5 @@ public interface MedicoService {
     Medico Update(MedicoRequestDTO medicoRequestDTO, UUID idmedico) throws NotFoundException;
     void delete(String crm) throws NotFoundException;
     List<Medico> findAll();
+    List<Medico> findByEspecialidade(String especialidade) throws NotFoundException;
 }
