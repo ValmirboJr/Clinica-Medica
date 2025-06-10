@@ -62,6 +62,11 @@ public class MedicoServiceImpl implements MedicoService {
     }
 
     @Override
+    public List<Medico> findByEspecialidade(String especialidade) {
+        return medicoRepository.findByEspecialidade(especialidade);
+    }
+
+    @Override
     public List<Medico> findAll() {
         return medicoRepository.findAll();
     }

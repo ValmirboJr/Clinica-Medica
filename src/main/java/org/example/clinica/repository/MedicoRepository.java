@@ -11,4 +11,5 @@ public interface MedicoRepository extends JpaRepository<Medico, UUID> {
     List<Medico> findByNome(String nome);
     Optional<Medico> findById(UUID idmedico);
     Optional<Medico> findByCrm(String crm);
+    List<Medico> findByEspecialidade(String especialidade);
 }

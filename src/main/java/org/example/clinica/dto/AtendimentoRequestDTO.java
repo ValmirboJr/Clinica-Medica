@@ -22,5 +22,6 @@ public class AtendimentoRequestDTO {
     private UUID idMedico;
     private LocalDate data;
     private LocalTime hora;
+    private String especialidade;
     private String sala;
 }

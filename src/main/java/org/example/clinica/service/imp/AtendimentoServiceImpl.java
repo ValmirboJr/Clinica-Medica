@@ -60,7 +60,7 @@ public class AtendimentoServiceImpl implements AtendimentoService {
                     .orElseThrow(() -> new NotFoundException("Médico não encontrado: " + idMedico));
 
             if (!atendimentoRepository
-                    .findByMedicoAndHoraAndData(medico, data)
+                    .findByMedicoAndHoraAndData(medico, data, hora)
                     .isEmpty()) {
                 throw new NotFoundException(
                         "Médico já agendado em " + data + " " + hora);
@@ -80,11 +80,28 @@ public class AtendimentoServiceImpl implements AtendimentoService {
 
 
     @Override
-    public List<Atendimento> listarAtendimentos(String crm, LocalDate data) {
+    public List<Atendimento> listarAtendimentos(String crm, LocalDate data, LocalTime hora) {
         Medico medico = medicoRepository.findByCrm(crm)
                 .orElseThrow(() ->
                         new NotFoundException("Médico não encontrado com o CRM: " + crm)
                 );
-        return atendimentoRepository.findByMedicoAndHoraAndData(medico, data);
+        return atendimentoRepository.findByMedicoAndHoraAndData(medico, data, hora);
+    }
+
+    @Override
+    public List<Atendimento> findByPaciente(UUID idPaciente) throws NotFoundException {
+        pacienteRepository.findById(idPaciente)
+                .orElseThrow(() -> new NotFoundException("Paciente não encontrado: " + idPaciente));
+
+        return atendimentoRepository.findByPaciente_Id(idPaciente);
+    }
+
+    @Override
+    public List<Atendimento> listarAtendimentosPorEspecialidade(String especialidade) {
+        List<Atendimento> lista = atendimentoRepository.findByMedicoEspecialidade(especialidade);
+        if (lista.isEmpty()) {
+            throw new NotFoundException("Nenhum atendimento encontrado para especialidade: " + especialidade);
+        }
+        return lista;
     }
 }

@@ -14,5 +14,7 @@ public interface AtendimentoService {
     Atendimento findById(UUID id) throws NotFoundException;
     List<Atendimento> findAll();
     List<Atendimento> CriarAtendimento(List<AtendimentoRequestDTO> dtoList, UUID idPaciente) throws NotFoundException;
-    List<Atendimento> listarAtendimentos(String crm, LocalDate data) throws NotFoundException;
+    List<Atendimento> listarAtendimentos(String crm, LocalDate data, LocalTime hora) throws NotFoundException;
+    List<Atendimento> listarAtendimentosPorEspecialidade(String Especialidade) throws NotFoundException;
+    List<Atendimento> findByPaciente(UUID idPaciente) throws NotFoundException;
 }
